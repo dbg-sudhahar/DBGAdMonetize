@@ -10,6 +10,7 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.provider.Settings.SettingNotFoundException;
@@ -25,6 +26,8 @@ import android.webkit.WebSettings.RenderPriority;
 import android.webkit.WebView;
 import android.widget.Toast;
 
+
+
 public class MainActivity extends Activity {
 
     private WebView mWebView;
@@ -35,7 +38,17 @@ public class MainActivity extends Activity {
     private long mLastTouch;
     private static final long mTouchThreshold = 2000;
     private Toast pressBackToast;
+    private Handler adHandler  = new Handler();
+    public Runnable adUpdater = new Runnable() {
+        @Override
+        public void run() {
 
+            updateAd();
+
+            adHandler.postDelayed(this, 1000);
+
+        }
+    }
     @SuppressLint({ "SetJavaScriptEnabled", "NewApi", "ShowToast" })
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,6 +126,8 @@ public class MainActivity extends Activity {
 
         pressBackToast = Toast.makeText(getApplicationContext(), R.string.press_back_again_to_exit,
                 Toast.LENGTH_SHORT);
+
+        adHandler.postDelayed(adUpdater,1000);
     }
 
     @Override
@@ -168,4 +183,13 @@ public class MainActivity extends Activity {
             super.onBackPressed();
         }
     }
+
+    public void updateAd()
+    {
+        // code to update add
+
+
+
+    }
+
 }
