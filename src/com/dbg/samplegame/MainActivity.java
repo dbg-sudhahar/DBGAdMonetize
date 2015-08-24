@@ -14,6 +14,7 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.provider.Settings.SettingNotFoundException;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
@@ -26,6 +27,9 @@ import android.webkit.WebSettings.RenderPriority;
 import android.webkit.WebView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 
 public class MainActivity extends Activity {
@@ -48,7 +52,7 @@ public class MainActivity extends Activity {
             adHandler.postDelayed(this, 1000);
 
         }
-    }
+    };
     @SuppressLint({ "SetJavaScriptEnabled", "NewApi", "ShowToast" })
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,7 +131,8 @@ public class MainActivity extends Activity {
         pressBackToast = Toast.makeText(getApplicationContext(), R.string.press_back_again_to_exit,
                 Toast.LENGTH_SHORT);
 
-        adHandler.postDelayed(adUpdater,1000);
+        loadAd();
+//        adHandler.postDelayed(adUpdater,1000);
     }
 
     @Override
@@ -191,5 +196,20 @@ public class MainActivity extends Activity {
 
 
     }
+    public void loadAd(){
 
+        AdView mAdView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.setAdListener(new AdListener() {
+            @Override
+            public void onAdOpened() {
+                super.onAdOpened();
+
+                Log.e("","On Ad Opened");
+            }
+        });
+        mAdView.loadAd(adRequest);
+
+
+    }
 }
