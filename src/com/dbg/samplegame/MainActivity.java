@@ -3,6 +3,10 @@ package com.dbg.samplegame;
 
 
 
+import com.parse.LogInCallback;
+import com.parse.ParseException;
+import com.parse.ParseUser;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.SharedPreferences;
@@ -27,9 +31,9 @@ import android.webkit.WebSettings.RenderPriority;
 import android.webkit.WebView;
 import android.widget.Toast;
 
-import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
+//import com.google.android.gms.ads.AdListener;
+//import com.google.android.gms.ads.AdRequest;
+//import com.google.android.gms.ads.AdView;
 
 
 public class MainActivity extends Activity {
@@ -131,11 +135,26 @@ public class MainActivity extends Activity {
         pressBackToast = Toast.makeText(getApplicationContext(), R.string.press_back_again_to_exit,
                 Toast.LENGTH_SHORT);
 
-        loadAd();
+//        loadAd();
 //        adHandler.postDelayed(adUpdater,1000);
+        
+        
+        parseLogin();
     }
 
-    @Override
+    private void parseLogin() {
+		ParseUser.logInInBackground("dbg", "dbg", new LogInCallback() {
+			
+			@Override
+			public void done(ParseUser arg0, ParseException arg1) {
+				Toast.makeText(MainActivity.this, "Pase login", Toast.LENGTH_SHORT).show();
+				
+			}
+		});
+		
+	}
+
+	@Override
     protected void onSaveInstanceState(Bundle outState) {
         mWebView.saveState(outState);
     }
@@ -196,20 +215,20 @@ public class MainActivity extends Activity {
 
 
     }
-    public void loadAd(){
-
-        AdView mAdView = (AdView) findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.setAdListener(new AdListener() {
-            @Override
-            public void onAdOpened() {
-                super.onAdOpened();
-
-                Log.e("","On Ad Opened");
-            }
-        });
-        mAdView.loadAd(adRequest);
-
-
-    }
+//    public void loadAd(){
+//
+//        AdView mAdView = (AdView) findViewById(R.id.adView);
+//        AdRequest adRequest = new AdRequest.Builder().build();
+//        mAdView.setAdListener(new AdListener() {
+//            @Override
+//            public void onAdOpened() {
+//                super.onAdOpened();
+//
+//                Log.e("","On Ad Opened");
+//            }
+//        });
+//        mAdView.loadAd(adRequest);
+//
+//
+//    }
 }
