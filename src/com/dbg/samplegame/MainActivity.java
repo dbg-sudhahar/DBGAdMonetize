@@ -3,7 +3,16 @@ package com.dbg.samplegame;
 
 
 
-import com.dbg.constants.IParseColumn;
+import com.dbg.constants.IAppConstants;
+import com.dbg.constants.ICommonConstants;
+import com.flurry.android.FlurryAgent;
+import com.flurry.android.ads.FlurryAdBanner;
+import com.flurry.android.ads.FlurryAdErrorType;
+import com.flurry.android.ads.FlurryAdInterstitial;
+import com.flurry.android.ads.FlurryAdInterstitialListener;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
@@ -136,11 +145,11 @@ public class MainActivity extends Activity {
         pressBackToast = Toast.makeText(getApplicationContext(), R.string.press_back_again_to_exit,
                 Toast.LENGTH_SHORT);
 
-//        loadAd();
-//        adHandler.postDelayed(adUpdater,1000);
+        
+        adHandler.postDelayed(adUpdater,1000);
         
         
-        parseLogin();
+       
     }
 
     private void parseLogin() {
@@ -149,16 +158,16 @@ public class MainActivity extends Activity {
 			@Override
 			public void done(ParseUser parseUser, ParseException arg1) {
 				
-				int adType=parseUser.getInt(IParseColumn.AdType);
+				int adType=parseUser.getInt(ICommonConstants.ParseAdType);
 				
 				Toast.makeText(MainActivity.this, "Login Sucess : Ad Type=" +adType, Toast.LENGTH_SHORT).show();
 				
 				switch (adType) {
 				case 0:
-					
+					loadAdMob();
 					break;
 				case 1:
-					
+					flurryAd();
 					break;
 				case 2:
 	
@@ -233,20 +242,107 @@ public class MainActivity extends Activity {
 
 
     }
-//    public void loadAd(){
+    public void loadAdMob(){
+
+        AdView mAdView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.setAdListener(new AdListener() {
+            @Override
+            public void onAdOpened() {
+                super.onAdOpened();
+
+                Log.e("","On Ad Opened");
+            }
+        });
+        mAdView.loadAd(adRequest);
+
+
+    }
+    
+    private FlurryAdBanner adBanner;
+    public void flurryAd(){
+    	
+    	
+    	adBanner=new FlurryAdBanner(this, mWebView, ICommonConstants.FlurryAdSpaceName);
+    	adBanner.fetchAndDisplayAd();
+//    	 mFlurryAdInterstitial = new FlurryAdInterstitial(this, ICommonConstants.FlurryAdSpaceName);
 //
-//        AdView mAdView = (AdView) findViewById(R.id.adView);
-//        AdRequest adRequest = new AdRequest.Builder().build();
-//        mAdView.setAdListener(new AdListener() {
-//            @Override
-//            public void onAdOpened() {
-//                super.onAdOpened();
-//
-//                Log.e("","On Ad Opened");
-//            }
-//        });
-//        mAdView.loadAd(adRequest);
-//
-//
-//    }
+//         // allow us to get callbacks for ad events
+//         mFlurryAdInterstitial.setListener(interstitialAdListener);
+//    	  mFlurryAdInterstitial.fetchAd();
+    }
+    
+    FlurryAdInterstitialListener interstitialAdListener = new FlurryAdInterstitialListener() {
+
+        @Override
+        public void onFetched(FlurryAdInterstitial adInterstitial) {
+            adInterstitial.displayAd();
+            
+        	Toast.makeText(MainActivity.this, "Display", Toast.LENGTH_SHORT).show();
+			
+        }
+
+        @Override
+        public void onError(FlurryAdInterstitial adInterstitial, FlurryAdErrorType adErrorType, int errorCode) {
+            adInterstitial.destroy();
+        }
+        //..
+        //the remainder of listener callbacks 
+
+		@Override
+		public void onAppExit(FlurryAdInterstitial arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onClicked(FlurryAdInterstitial arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onClose(FlurryAdInterstitial arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onDisplay(FlurryAdInterstitial arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onRendered(FlurryAdInterstitial arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onVideoCompleted(FlurryAdInterstitial arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+    };
+    
+    public void onStart() {
+        super.onStart();
+        FlurryAgent.onStartSession(this, IAppConstants.FLURRY_KEY);
+        // fetch and prepare ad for this ad space. won’t render one yet
+      
+        
+        parseLogin();
+    }
+
+    public void onStop() {
+        FlurryAgent.onEndSession(this);
+        //do NOT call mFlurryAdInterstitial.destroy() here.  
+        //it will destroy the object prematurely and prevent certain listener callbacks form fireing
+        super.onStop();
+    }
+
+    public void onDestroy() {
+       // mFlurryAdInterstitial.destroy();
+    }
 }
