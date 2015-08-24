@@ -276,6 +276,7 @@ public class MainActivity extends Activity {
               //If ad click
                 
                 Toast.makeText(MainActivity.this, "Click", Toast.LENGTH_SHORT).show();
+                updateParseClickCount(0);
             }
             
             @Override
@@ -284,6 +285,8 @@ public class MainActivity extends Activity {
             	super.onAdLoaded();
             	
             	Toast.makeText(MainActivity.this, "Load", Toast.LENGTH_SHORT).show();
+            	
+            	updateParseDisplayCount(0);
             }
             
             
@@ -390,16 +393,43 @@ public class MainActivity extends Activity {
     }
     
     
-    public void updateParseLoadCount(){
+    public void updateParseDisplayCount(int type){
     	ParseQuery<ParseObject> advertisments=ParseQuery.getQuery(ICommonConstants.ParseAdvertismentTable);
-    	advertisments.whereEqualTo(ICommonConstants.ParseAdType, 0);
+    	advertisments.whereEqualTo(ICommonConstants.ParseAdType, type);
     	advertisments.findInBackground(new FindCallback<ParseObject>() {
 			
 			@Override
 			public void done(List<ParseObject> arg0, ParseException arg1) {
 				
 				if(arg0.size()>0){
+					ParseObject parseObject=arg0.get(0);
 					
+					int displayCount=parseObject.getInt(ICommonConstants.ParseDisplayCount);
+					
+					parseObject.put(ICommonConstants.ParseDisplayCount,(displayCount+1));
+					parseObject.saveInBackground();
+				}
+				
+			}
+		});
+    }
+    
+    
+    public void updateParseClickCount(int type){
+    	ParseQuery<ParseObject> advertisments=ParseQuery.getQuery(ICommonConstants.ParseAdvertismentTable);
+    	advertisments.whereEqualTo(ICommonConstants.ParseAdType, type);
+    	advertisments.findInBackground(new FindCallback<ParseObject>() {
+			
+			@Override
+			public void done(List<ParseObject> arg0, ParseException arg1) {
+				
+				if(arg0.size()>0){
+					ParseObject parseObject=arg0.get(0);
+					
+					int clickCount=parseObject.getInt(ICommonConstants.ParseClickCount);
+					
+					parseObject.put(ICommonConstants.ParseClickCount,(clickCount+1));
+					parseObject.saveInBackground();
 				}
 				
 			}
