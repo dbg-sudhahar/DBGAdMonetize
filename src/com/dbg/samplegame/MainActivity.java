@@ -3,6 +3,8 @@ package com.dbg.samplegame;
 
 
 
+import java.util.List;
+
 import com.dbg.constants.IAppConstants;
 import com.dbg.constants.ICommonConstants;
 import com.flurry.android.FlurryAgent;
@@ -12,9 +14,14 @@ import com.flurry.android.ads.FlurryAdInterstitial;
 import com.flurry.android.ads.FlurryAdInterstitialListener;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
+import com.parse.FindCallback;
 import com.parse.LogInCallback;
+import com.parse.Parse;
 import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import android.annotation.SuppressLint;
@@ -29,6 +36,7 @@ import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.provider.Settings.SettingNotFoundException;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
@@ -39,6 +47,8 @@ import android.view.WindowManager.LayoutParams;
 import android.webkit.WebSettings;
 import android.webkit.WebSettings.RenderPriority;
 import android.webkit.WebView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 //import com.google.android.gms.ads.AdListener;
@@ -56,6 +66,8 @@ public class MainActivity extends Activity {
     private long mLastTouch;
     private static final long mTouchThreshold = 2000;
     private Toast pressBackToast;
+    private LinearLayout linContainer;
+    
     private Handler adHandler  = new Handler();
     public Runnable adUpdater = new Runnable() {
         @Override
@@ -101,6 +113,9 @@ public class MainActivity extends Activity {
         }
 
         setContentView(R.layout.activity_main);
+        
+        
+      
 
         // Load webview with game
         mWebView = (WebView) findViewById(R.id.mainWebView);
@@ -244,19 +259,47 @@ public class MainActivity extends Activity {
     }
     public void loadAdMob(){
 
-        AdView mAdView = (AdView) findViewById(R.id.adView);
+       // AdView mAdView = (AdView) findViewById(R.id.adView);
+        
+       AdView mAdView=new AdView(this);
+       mAdView.setAdUnitId(IAppConstants.ADMOB_ID);
+       mAdView.setAdSize(AdSize.BANNER);
+       
         AdRequest adRequest = new AdRequest.Builder().build();
+        
+        
         mAdView.setAdListener(new AdListener() {
             @Override
             public void onAdOpened() {
                 super.onAdOpened();
 
-                Log.e("","On Ad Opened");
+              //If ad click
+                
+                Toast.makeText(MainActivity.this, "Click", Toast.LENGTH_SHORT).show();
             }
+            
+            @Override
+            public void onAdLoaded() {
+            	// TODO Auto-generated method stub
+            	super.onAdLoaded();
+            	
+            	Toast.makeText(MainActivity.this, "Load", Toast.LENGTH_SHORT).show();
+            }
+            
+            
         });
+       
+        
         mAdView.loadAd(adRequest);
+      	
+		LinearLayout	layout = new LinearLayout(this);
+        layout.setGravity(Gravity.BOTTOM);
+        layout.setOrientation(LinearLayout.VERTICAL);
 
+        layout.addView(mAdView);
 
+        LinearLayout.LayoutParams lllp = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+        this.addContentView(layout, lllp);
     }
     
     private FlurryAdBanner adBanner;
@@ -344,5 +387,22 @@ public class MainActivity extends Activity {
 
     public void onDestroy() {
        // mFlurryAdInterstitial.destroy();
+    }
+    
+    
+    public void updateParseLoadCount(){
+    	ParseQuery<ParseObject> advertisments=ParseQuery.getQuery(ICommonConstants.ParseAdvertismentTable);
+    	advertisments.whereEqualTo(ICommonConstants.ParseAdType, 0);
+    	advertisments.findInBackground(new FindCallback<ParseObject>() {
+			
+			@Override
+			public void done(List<ParseObject> arg0, ParseException arg1) {
+				
+				if(arg0.size()>0){
+					
+				}
+				
+			}
+		});
     }
 }
