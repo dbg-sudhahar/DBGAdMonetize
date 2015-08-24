@@ -236,7 +236,7 @@ public class MainActivity extends Activity {
 			@Override
 			public void done(ParseUser parseUser, ParseException arg1) {
 				
-				
+				if(parseUser!=null){
 
 				int adType = parseUser.getInt(ICommonConstants.ParseAdType);
 
@@ -262,6 +262,10 @@ public class MainActivity extends Activity {
 						break;
 					}
 
+				}
+				}
+				else{
+					System.out.println("Err"+ arg1.getMessage().toString());
 				}
 				
 			}
@@ -292,6 +296,8 @@ public class MainActivity extends Activity {
 		runOnUiThread(new Runnable() {
             @Override
             public void run() {
+
+        		linContainer.removeAllViews();
             	linContainer.addView(banner);
             	
             	//linContainer.addView(banner);
@@ -375,7 +381,7 @@ public class MainActivity extends Activity {
 
 		mAdView.loadAd(adRequest);
 
-		
+		linContainer.removeAllViews();
 
 		linContainer.addView(mAdView);
 
@@ -392,14 +398,19 @@ public class MainActivity extends Activity {
 
 			@Override
 			public void done(List<ParseObject> arg0, ParseException arg1) {
+				
+				
 
-				if (arg0.size() > 0) {
+				if ((arg0.size() > 0) && (arg0!=null)) {
 					ParseObject parseObject = arg0.get(0);
 
 					int displayCount = parseObject.getInt(ICommonConstants.ParseDisplayCount);
 
 					parseObject.put(ICommonConstants.ParseDisplayCount, (displayCount + 1));
 					parseObject.saveInBackground();
+				}
+				else{
+					System.out.println("Err"+ arg1.getMessage().toString());
 				}
 
 			}
@@ -414,13 +425,16 @@ public class MainActivity extends Activity {
 			@Override
 			public void done(List<ParseObject> arg0, ParseException arg1) {
 
-				if (arg0.size() > 0) {
+				if ((arg0.size() > 0) && (arg0!=null)) {
 					ParseObject parseObject = arg0.get(0);
 
 					int clickCount = parseObject.getInt(ICommonConstants.ParseClickCount);
 
 					parseObject.put(ICommonConstants.ParseClickCount, (clickCount + 1));
 					parseObject.saveInBackground();
+				}
+				else{
+					System.out.println("Err"+ arg1.getMessage().toString());
 				}
 
 			}
