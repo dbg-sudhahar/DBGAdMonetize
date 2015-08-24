@@ -11,6 +11,8 @@ public interface IAppConstants {
 	
 	public static String ADMOB_ID="ca-app-pub-8572551537746831/8190297904";
 	
+	public static String REVMOB_KEY="55db700f0b2cb12b75d81122";
+	
 	
 	
 	
