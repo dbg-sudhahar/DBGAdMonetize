@@ -3,6 +3,7 @@ package com.dbg.samplegame;
 
 
 
+import com.dbg.constants.IParseColumn;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
@@ -146,9 +147,26 @@ public class MainActivity extends Activity {
 		ParseUser.logInInBackground("dbg", "dbg", new LogInCallback() {
 			
 			@Override
-			public void done(ParseUser arg0, ParseException arg1) {
-				Toast.makeText(MainActivity.this, "Pase login", Toast.LENGTH_SHORT).show();
+			public void done(ParseUser parseUser, ParseException arg1) {
 				
+				int adType=parseUser.getInt(IParseColumn.AdType);
+				
+				Toast.makeText(MainActivity.this, "Login Sucess : Ad Type=" +adType, Toast.LENGTH_SHORT).show();
+				
+				switch (adType) {
+				case 0:
+					
+					break;
+				case 1:
+					
+					break;
+				case 2:
+	
+					break;
+
+				default:
+					break;
+				}
 			}
 		});
 		
