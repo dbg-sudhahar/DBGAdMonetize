@@ -25,6 +25,7 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -37,6 +38,7 @@ import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.Window;
 import android.view.WindowManager;
@@ -44,6 +46,7 @@ import android.view.WindowManager.LayoutParams;
 import android.webkit.WebSettings;
 import android.webkit.WebSettings.RenderPriority;
 import android.webkit.WebView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -69,10 +72,9 @@ public class MainActivity extends Activity {
 	Thread myThread = null;
 	Runnable runnable = null;
 	
-	LinearLayout layout;
-	LinearLayout.LayoutParams lllp;
+	
+	int customAdTimeInterval=0;
 
-	@SuppressLint({ "SetJavaScriptEnabled", "NewApi", "ShowToast" })
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -228,66 +230,84 @@ public class MainActivity extends Activity {
 
 	private void parseLogin() {
 
-		
 	
+		
 
 		ParseUser.logInInBackground("dbg", "dbg", new LogInCallback() {
 
 			@Override
 			public void done(ParseUser parseUser, ParseException arg1) {
 				
-				if(parseUser!=null){
+				if((parseUser!=null)&&(arg1==null)){
 
 				int adType = parseUser.getInt(ICommonConstants.ParseAdType);
 
-				// Toast.makeText(MainActivity.this, "Login Sucess : Ad Type="
-				// +adType, Toast.LENGTH_SHORT).show();
+				loadAd(adType);
 
-				System.out.println("Login Sucess : Ad Type=" + adType);
-
-				if (adTypeValue != adType) {
-					adTypeValue = adType;
-					switch (adType) {
-					case 0:
-						loadAdMob();
-						break;
-					case 1:
-						loadRevMob();
-						break;
-					case 2:
-
-						break;
-
-					default:
-						break;
-					}
-
-				}
 				}
 				else{
-					System.out.println("Err"+ arg1.getMessage().toString());
+					
 				}
 				
 			}
 
 			
 		});
+
 		
 
 	}
+		
+		private void loadAd(int adType){
+			if (adTypeValue != adType) {
+				adTypeValue = adType;
+				switch (adType) {
+				case 0:
+					loadAdMob();
+					break;
+				case 1:
+					loadRevMob();
+					break;
+				case 2:
+					loadCustomAd();
+					break;
+
+				default:
+					break;
+				}
+
+			
+			}
+		}
 	
+	private void loadCustomAd() {
+			
+		linContainer.removeAllViews();
+		
+		
+		ImageView customAd=new ImageView(this);
+		customAd.setBackgroundResource(R.drawable.ad);
+		customAd.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				updateParseClickCount(ICommonConstants.DBGAd);
+				
+			}
+		});
+		
+
+		linContainer.addView(customAd);
+		
+		updateParseDisplayCount(ICommonConstants.DBGAd);
+		
+		}
+
 	RevMobBanner banner;
 	RevMob revmob;
 	
 	private void loadRevMob() {
-		
-		
-//		layout = new LinearLayout(this);
-//		layout.setGravity(Gravity.BOTTOM);
-//		layout.setOrientation(LinearLayout.VERTICAL);
-//		
-//		lllp = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
-//				LayoutParams.MATCH_PARENT);
+	
 		
 		
 		banner = revmob.createBanner(this, revmobListener);
@@ -300,10 +320,7 @@ public class MainActivity extends Activity {
         		linContainer.removeAllViews();
             	linContainer.addView(banner);
             	
-            	//linContainer.addView(banner);
-
-        		
-//        		MainActivity.this.addContentView(layout, lllp);
+            
             }
         });
 		
@@ -401,7 +418,7 @@ public class MainActivity extends Activity {
 				
 				
 
-				if ((arg0.size() > 0) && (arg0!=null)) {
+				if ((arg0!=null)&&(arg1==null)) {
 					ParseObject parseObject = arg0.get(0);
 
 					int displayCount = parseObject.getInt(ICommonConstants.ParseDisplayCount);
@@ -412,6 +429,7 @@ public class MainActivity extends Activity {
 				else{
 					System.out.println("Err"+ arg1.getMessage().toString());
 				}
+				
 
 			}
 		});
@@ -424,8 +442,8 @@ public class MainActivity extends Activity {
 
 			@Override
 			public void done(List<ParseObject> arg0, ParseException arg1) {
-
-				if ((arg0.size() > 0) && (arg0!=null)) {
+				try{
+				if ( (arg0!=null)&&(arg1==null)) {
 					ParseObject parseObject = arg0.get(0);
 
 					int clickCount = parseObject.getInt(ICommonConstants.ParseClickCount);
@@ -435,6 +453,10 @@ public class MainActivity extends Activity {
 				}
 				else{
 					System.out.println("Err"+ arg1.getMessage().toString());
+				}
+				
+				}catch(Exception exception){
+					System.out.println("Err"+ exception.getMessage().toString());
 				}
 
 			}
@@ -466,7 +488,13 @@ public class MainActivity extends Activity {
 			while (true) {
 				try {
 					parseLogin();
-					Thread.sleep(5000);
+					Thread.sleep(10000);
+					if(adTypeValue==2){
+						customAdTimeInterval++;
+						
+					}
+					
+					
 				} catch (InterruptedException e) {
 					Thread.currentThread().interrupt();
 				} catch (Exception e) {

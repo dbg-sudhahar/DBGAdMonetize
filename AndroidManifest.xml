@@ -6,7 +6,7 @@
 
     <uses-sdk
         android:minSdkVersion="8"
-        android:targetSdkVersion="22" />
+        android:targetSdkVersion="19" />
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -26,9 +26,11 @@
         
 
         <activity
-            android:name="com.dbg.samplegame.MainActivity"
+            android:name="com.dbg.gameplay.MainActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
+            
+          android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen"
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -52,7 +54,7 @@
         
            <meta-data
             android:name="com.revmob.app.id"
-            android:value="52f2047119a728247400001f" />
+            android:value="53706433b116079579787ec7" />
       
     </application>
 

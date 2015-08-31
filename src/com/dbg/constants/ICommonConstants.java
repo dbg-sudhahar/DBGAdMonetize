@@ -18,4 +18,12 @@ public interface ICommonConstants {
 	public static int AdMob=0;
 
 	public static int RevMob=1;
+	public static int DBGAd=2;
+	
+
+	public static int BANNER=0;
+	
+	public static int VIDEO=1;
+	
+	
 }
