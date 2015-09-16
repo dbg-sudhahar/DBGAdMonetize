@@ -5,6 +5,9 @@ public interface ICommonConstants {
 	public static String ParseClickCount="ClickCount";
 
 	public static String ParseDisplayCount="DisplayCount";
+
+	public static String ParseVideoDisplayCount="VideoDisplayCount";
+
 	
 	public static String ParseUsername="Username";
 	public static String Parsepassword="password";

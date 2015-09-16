@@ -4,11 +4,13 @@ import java.util.List;
 
 import com.dbg.constants.IAppConstants;
 import com.dbg.constants.ICommonConstants;
+import com.dbg.manager.MenuManager;
 import com.dbg.samplegame.R;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
 import com.parse.FindCallback;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
@@ -19,20 +21,25 @@ import com.parse.SaveCallback;
 import com.revmob.RevMob;
 import com.revmob.RevMobAdsListener;
 import com.revmob.ads.banner.RevMobBanner;
+import com.revmob.ads.interstitial.RevMobFullscreen;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
+import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.MediaController;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
+import android.widget.VideoView;
 
 public class MainActivity extends Activity {
 
@@ -65,6 +72,18 @@ public class MainActivity extends Activity {
 	int customAdTimeInterval=0;
 
 	private LinearLayout linContainer;
+	
+	private InterstitialAd interstitialAd;
+	
+	
+	VideoView videoHolder;
+	  RelativeLayout rl;
+	  
+	  RelativeLayout.LayoutParams lp1;
+	  
+	  
+	  MenuManager menuManager;
+	  
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +96,7 @@ public class MainActivity extends Activity {
 				
 				
 				 adTypeValue = -1;
-				 parseLogin();
+				 parseLogin(true);
 				
 			}
 			
@@ -87,7 +106,8 @@ public class MainActivity extends Activity {
 
 //				Toast.makeText(MainActivity.this, "Reset", Toast.LENGTH_SHORT).show();
 				 adTypeValue = -1;
-				 parseLogin();
+				 parseLogin(true);
+				 
 				
 			}
 			
@@ -98,6 +118,8 @@ public class MainActivity extends Activity {
 				
 			}
 		});
+        
+        menuManager=new MenuManager(this);
 
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
         view.hasSaveState = settings.getBoolean("save_state", false);
@@ -109,7 +131,9 @@ public class MainActivity extends Activity {
         }
         
         
-        RelativeLayout rl = new RelativeLayout(this);
+       // videoView=(VideoView)findViewById(R.id.videoView);
+        
+         rl = new RelativeLayout(this);
         
         rl.addView(view);
         
@@ -119,17 +143,54 @@ public class MainActivity extends Activity {
         
         
         rl.addView(linContainer,lp);
+        
+        
+        
+        videoHolder= new VideoView(this);
+        
+        videoHolder.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT));
+        
+        
+        lp1 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        lp1.addRule(RelativeLayout.CENTER_HORIZONTAL);
+        lp1.addRule(RelativeLayout.CENTER_VERTICAL);
+        
+     //   rl.addView(videoHolder);
+        
         setContentView(rl);
         
-        revmob = RevMob.start(this);
+        revmob = RevMob.start(MainActivity.this);
+//        revmob = RevMob.startWithListener(MainActivity.this, revmobListener);
         
-        
+       
         adTypeValue = -1;
-		 parseLogin();
+		 parseLogin(false);
         
+      //  loadVideoAd(2);
         
     }
 
+    
+    
+    
+    @Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		
+
+		return menuManager.onPrepareOptionsMenuConfig(menu);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		
+	
+		return menuManager.onOptionsItemSelected(item);
+	}
+    
+    
+    
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_MENU) {
@@ -259,7 +320,7 @@ public class MainActivity extends Activity {
 		public void run() {
 			while (true) {
 				try {
-					parseLogin();
+					parseLogin(false);
 					Thread.sleep(5000);
 					if(adTypeValue==2){
 						customAdTimeInterval++;
@@ -277,7 +338,7 @@ public class MainActivity extends Activity {
 
 	}
 	
-private void parseLogin() {
+private void parseLogin(final boolean isVideoLoad) {
 
 	
 
@@ -293,6 +354,10 @@ private void parseLogin() {
 				int adType = parseUser.getInt(ICommonConstants.ParseAdType);
 
 				loadAd(adType);
+				
+				if(isVideoLoad){
+					loadVideoAd(adType);
+				}
 
 				}
 				else{
@@ -332,6 +397,66 @@ private void parseLogin() {
 			
 			}
 		}
+		 private RevMobFullscreen video;
+		    private boolean videoIsLoaded = false;
+		    
+		    void runOnAnotherThread(Runnable action) {
+				new Thread(action).start();
+			}
+		private void loadVideoAd(int adType){
+			
+				switch (adType) {
+				case 0:
+					loadAdMobVideo();
+					break;
+				case 1:
+					
+					
+					 video = revmob.createVideo(MainActivity.this, revmobListener);; 
+					
+					
+					
+					break;
+				case 2:
+					
+					updateParseCount(ICommonConstants.DBGAd, ICommonConstants.ParseVideoDisplayCount);
+					if(videoHolder!=null){
+					 rl.addView(videoHolder,lp1);
+					videoHolder.setVisibility(View.VISIBLE);
+					}
+					MediaController controller=new MediaController(MainActivity.this);
+					//if you want the controls to appear
+					//videoHolder.setMediaController(controller);
+					Uri video = Uri.parse("android.resource://" + getPackageName() + "/" 
+					+ R.raw.sample); //do not add any extension
+					//if your file is named sherif.mp4 and placed in /raw
+					//use R.raw.sherif
+					videoHolder.setVideoURI(video);
+					
+					videoHolder.start();
+					videoHolder.setOnCompletionListener(new OnCompletionListener() {
+						
+						@Override
+						public void onCompletion(MediaPlayer arg0) {
+							
+							if(videoHolder!=null){
+							videoHolder.setVisibility(View.INVISIBLE);
+							 rl.removeView(videoHolder);
+						}
+						}
+					});
+					
+					
+					
+					break;
+
+				default:
+					break;
+				}
+
+			
+			
+		}
 	
 	private void loadCustomAd() {
 			
@@ -344,7 +469,9 @@ private void parseLogin() {
 			
 			@Override
 			public void onClick(View v) {
-				updateParseClickCount(ICommonConstants.DBGAd);
+//				updateParseClickCount(ICommonConstants.DBGAd);
+				
+				updateParseCount(ICommonConstants.DBGAd, ICommonConstants.ParseClickCount);
 				
 			}
 		});
@@ -352,7 +479,9 @@ private void parseLogin() {
 
 		linContainer.addView(customAd);
 		
-		updateParseDisplayCount(ICommonConstants.DBGAd);
+//		updateParseDisplayCount(ICommonConstants.DBGAd);
+		
+		updateParseCount(ICommonConstants.DBGAd, ICommonConstants.ParseDisplayCount);
 		
 		}
 
@@ -382,19 +511,27 @@ private void parseLogin() {
 		
 	}
 	RevMobAdsListener revmobListener = new RevMobAdsListener(){
+		
+		@Override
+		public void onRevMobSessionIsStarted() {
+			 video = revmob.createVideo(MainActivity.this, revmobListener);; 
+		       
+		}
 		@Override
 		public void onRevMobAdClicked() {
-			// TODO Auto-generated method stub
-			super.onRevMobAdClicked();
+		
+			updateParseCount(ICommonConstants.RevMob, ICommonConstants.ParseClickCount);
 			
 			
-			updateParseClickCount(ICommonConstants.RevMob);
+//			updateParseClickCount(ICommonConstants.RevMob);
 		}
 		@Override
 		public void onRevMobAdDisplayed() {
 			// TODO Auto-generated method stub
 			super.onRevMobAdDisplayed();
-			updateParseDisplayCount(ICommonConstants.RevMob);
+//			updateParseDisplayCount(ICommonConstants.RevMob);
+			
+			updateParseCount(ICommonConstants.RevMob, ICommonConstants.ParseDisplayCount);
 			
 		}
 		
@@ -403,8 +540,25 @@ private void parseLogin() {
 			// TODO Auto-generated method stub
 			super.onRevMobAdDismissed();
 			
-			Toast.makeText(MainActivity.this, "DISS", Toast.LENGTH_SHORT).show();
+			
 		}
+		
+		@Override
+		public void onRevMobRewardedVideoLoaded() {
+			// TODO Auto-generated method stub
+			super.onRevMobRewardedVideoLoaded();
+			
+			
+		}
+		
+		
+		
+		public void onRevMobVideoLoaded(){
+			
+			video.showVideo();
+			
+			updateParseCount(ICommonConstants.RevMob, ICommonConstants.ParseVideoDisplayCount);
+		}		
 		
 	};
 	public void loadAdMob() {
@@ -415,6 +569,7 @@ private void parseLogin() {
 		AdView mAdView = new AdView(this);
 		mAdView.setAdUnitId(IAppConstants.ADMOB_ID);
 		mAdView.setAdSize(AdSize.BANNER);
+		
 
 		AdRequest adRequest = new AdRequest.Builder().build();
 
@@ -426,7 +581,9 @@ private void parseLogin() {
 				// If ad click
 
 				
-				updateParseClickCount(ICommonConstants.AdMob);
+//				updateParseClickCount(ICommonConstants.AdMob);
+				
+				updateParseCount(ICommonConstants.AdMob, ICommonConstants.ParseClickCount);
 			}
 
 			@Override
@@ -436,7 +593,9 @@ private void parseLogin() {
 
 				
 
-				updateParseDisplayCount(ICommonConstants.AdMob);
+//				updateParseDisplayCount(ICommonConstants.AdMob);
+				
+				updateParseCount(ICommonConstants.AdMob, ICommonConstants.ParseDisplayCount);
 			}
 
 		});
@@ -450,10 +609,38 @@ private void parseLogin() {
 		
 //		this.addContentView(layout, lllp);
 	}
+	
+	
+
+	
+	public void loadAdMobVideo() {
+	interstitialAd=new InterstitialAd(MainActivity.this);
+	interstitialAd.setAdUnitId(IAppConstants.ADMOB_VIDEO_ID);
+	interstitialAd.setAdListener(new AdListener() {
+		@Override
+		public void onAdLoaded() {
+			// TODO Auto-generated method stub
+			super.onAdLoaded();
+			
+			if(interstitialAd.isLoaded()){
+				interstitialAd.show();
+			}
+			updateParseCount(ICommonConstants.AdMob, ICommonConstants.ParseVideoDisplayCount);
+		}
+		
+		
+		
+	});
+	AdRequest adRequest = new AdRequest.Builder().build();
+	interstitialAd.loadAd(adRequest);
+		
+
+	}
 
 	
 
-	public void updateParseDisplayCount(int type) {
+	
+	public void updateParseCount(int type,final String col) {
 		ParseQuery<ParseObject> advertisments = ParseQuery.getQuery(ICommonConstants.ParseAdvertismentTable);
 		advertisments.whereEqualTo(ICommonConstants.ParseAdType, type);
 		advertisments.findInBackground(new FindCallback<ParseObject>() {
@@ -466,9 +653,9 @@ private void parseLogin() {
 				if ((arg0!=null)&&(arg1==null)) {
 					ParseObject parseObject = arg0.get(0);
 
-					int displayCount = parseObject.getInt(ICommonConstants.ParseDisplayCount);
+					int displayCount = parseObject.getInt(col);
 
-					parseObject.put(ICommonConstants.ParseDisplayCount, (displayCount + 1));
+					parseObject.put(col, (displayCount + 1));
 					parseObject.saveInBackground(new SaveCallback() {
 						
 						@Override
@@ -487,38 +674,4 @@ private void parseLogin() {
 		});
 	}
 
-	public void updateParseClickCount(int type) {
-		ParseQuery<ParseObject> advertisments = ParseQuery.getQuery(ICommonConstants.ParseAdvertismentTable);
-		advertisments.whereEqualTo(ICommonConstants.ParseAdType, type);
-		advertisments.findInBackground(new FindCallback<ParseObject>() {
-
-			@Override
-			public void done(List<ParseObject> arg0, ParseException arg1) {
-				try{
-				if ( (arg0!=null)&&(arg1==null)) {
-					ParseObject parseObject = arg0.get(0);
-
-					int clickCount = parseObject.getInt(ICommonConstants.ParseClickCount);
-
-					parseObject.put(ICommonConstants.ParseClickCount, (clickCount + 1));
-					parseObject.saveInBackground(new SaveCallback() {
-						
-						@Override
-						public void done(ParseException arg0) {
-							// TODO Auto-generated method stub
-							
-						}
-					});
-				}
-				else{
-					System.out.println("Err"+ arg1.getMessage().toString());
-				}
-				
-				}catch(Exception exception){
-					System.out.println("Err"+ exception.getMessage().toString());
-				}
-
-			}
-		});
-	}
 }
