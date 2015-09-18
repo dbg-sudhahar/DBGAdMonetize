@@ -30,7 +30,7 @@ public class MenuManager{
 	  
 	    
 	    public boolean onPrepareOptionsMenuConfig(Menu menu) {
-	    	menu.add(Menu.NONE, PROFILE_ID, Menu.NONE, "Profile").setIcon(SelectorManager.getButtonDrawableByScreenCathegory(mActivity, R.drawable.ic_people, R.drawable.ic_photos)).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+	    	menu.add(Menu.NONE, PROFILE_ID, Menu.NONE, "Profile").setIcon(SelectorManager.getButtonDrawableByScreenCathegory(mActivity, R.drawable.profile_normal, R.drawable.profile_press)).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 	    
 	   
 	        return true;

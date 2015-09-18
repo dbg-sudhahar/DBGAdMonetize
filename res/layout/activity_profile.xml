@@ -46,6 +46,14 @@
         android:layout_height="0dp"
         android:layout_weight="70"
         android:background="@color/lightgrey" >
+        
+        <ListView
+            android:id="@+id/listView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="-10dp"
+            android:layout_below="@+id/linearLayout1">
+        </ListView>
 
         <LinearLayout
             android:id="@+id/linearLayout1"
@@ -54,7 +62,7 @@
             android:orientation="horizontal" >
 
             <RelativeLayout
-                android:id="@+id/button1"
+                android:id="@+id/rel1"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -85,7 +93,7 @@
             </RelativeLayout>
 
             <RelativeLayout
-                android:id="@+id/button2"
+                android:id="@+id/rel2"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -117,7 +125,7 @@
             </RelativeLayout>
 
             <RelativeLayout
-                android:id="@+id/button3"
+                android:id="@+id/rel3"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -149,12 +157,7 @@
         </LinearLayout>
         
         
-         <ListView
-            android:id="@+id/listView1"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/linearLayout1">
-        </ListView>
+         
     </RelativeLayout>
 
 </LinearLayout>
