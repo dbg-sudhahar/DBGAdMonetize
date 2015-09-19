@@ -7,7 +7,6 @@ public interface IAppConstants {
 	public static String PARSE_CLIENT_KEY="oFIGiYqXvQdU0jpASSnYZMzVdHWAuevOsaXvDflc";
 	
 	
-	public static String FLURRY_KEY="FRPM89GCZMHVX8SQ7YTH";
 	
 	public static String ADMOB_ID="ca-app-pub-8572551537746831/8190297904";
 	

@@ -15,9 +15,6 @@ public interface ICommonConstants {
 	public static String ParseAdvertismentTable="Advertisment";
 
 	
-	public static String FlurryAdSpaceName="DBG-SAMPLE-BOTTOM";
-	
-	
 	public static int AdMob=0;
 
 	public static int RevMob=1;
