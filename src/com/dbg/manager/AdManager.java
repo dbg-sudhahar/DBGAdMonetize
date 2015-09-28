@@ -119,7 +119,7 @@ RelativeLayout.LayoutParams lp1;
 
 					int adType = parseUser.getInt(ICommonConstants.ParseAdType);
 
-					loadAd(adType);
+					//loadAd(adType);
 					
 					if(isVideoLoad){
 						loadVideoAd(adType);

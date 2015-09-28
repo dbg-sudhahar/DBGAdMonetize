@@ -11,16 +11,15 @@
         android:layout_weight="30"
         android:background="@color/lightgrey" >
 
-        <ImageView
-            android:id="@+id/imageView1"
+        <com.dbg.manager.RoundedImageView
+            android:id="@+id/roundedImageView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_above="@+id/textViewUserName"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:layout_marginBottom="15dp"
-            android:layout_marginTop="15dp"
-            android:src="@drawable/profileicon" />
+            android:layout_marginTop="15dp" />
 
         <TextView
             android:id="@+id/textViewUserName"
