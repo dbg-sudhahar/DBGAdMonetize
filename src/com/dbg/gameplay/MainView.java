@@ -295,7 +295,7 @@ public class MainView extends View {
          paint.setTextSize(bodyTextSize/2);
          paint.setColor(getResources().getColor(R.color.text_black));
          paint.setTextAlign(Paint.Align.LEFT);
-         canvas.drawText(text, startingX, cellSize+(cellSize/2), paint);
+         canvas.drawText(text, startingX, cellSize+(cellSize/8), paint);
     	
     	}
     	 
@@ -607,7 +607,7 @@ public class MainView extends View {
 
         sYIcons = (startingY + eYAll) / 2 - iconSize / 2;
         sXNewGame = (endingX - iconSize);
-        sXUndo = sXNewGame - iconSize * 3 / 2 - iconPaddingSize;
+        sXUndo = sXNewGame - iconSize * 3 / 2 ;//- iconPaddingSize;
         resyncTime();
     }
 
