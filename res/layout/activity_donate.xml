@@ -1,0 +1,94 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+        android:background="@color/lightgrey"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+    
+        android:padding="10dp" >
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="DONATION AMOUNT"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@android:color/black"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/editTextAmount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textView1"
+            android:layout_marginTop="5dp"
+            android:ems="10"
+            android:background="@drawable/edt"
+            android:hint="Enter Donation Amount"
+            android:inputType="number"
+            android:textColor="@android:color/black" />
+
+        <TextView
+            android:id="@+id/textViewPay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/editTextAmount"
+            android:layout_marginTop="20dp"
+            android:text="Pay with a card"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@android:color/black"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/editTextCardno"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textViewPay"
+            android:layout_marginTop="15dp"
+            android:ems="10"
+            android:hint="Card Number"
+            android:inputType="number"
+            android:background="@drawable/edt"
+            android:textColor="@android:color/black" />
+
+        <EditText
+            android:id="@+id/editTextDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/editTextCardno"
+            android:layout_marginTop="15dp"
+            android:ems="10"
+            android:hint="Exp Date"
+            android:inputType="number"
+            android:background="@drawable/edt"
+            android:textColor="@android:color/black" />
+
+        <EditText
+            android:id="@+id/editTextCVV"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/editTextDate"
+            android:layout_marginTop="15dp"
+            android:ems="10"
+            android:hint="CVV"
+            android:background="@drawable/edt"
+            
+            android:textColor="@android:color/black"
+            android:inputType="number" />
+
+        <Button
+            android:id="@+id/button1"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/editTextCVV"
+            android:layout_marginTop="25dp"
+            android:text="Donate" />
+    </RelativeLayout>
+
+</ScrollView>

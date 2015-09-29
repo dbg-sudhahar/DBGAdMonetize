@@ -1,9 +1,15 @@
 package com.dbg.gameplay;
 
-import com.dbg.gameplay.MainActivity.CountDownRunner;
+import java.util.List;
+
+import com.dbg.constants.ICommonConstants;
 import com.dbg.manager.AdManager;
+import com.dbg.manager.AdManager.ParseListener;
 import com.dbg.manager.MenuManager;
-import com.dbg.samplegame.R;
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
@@ -21,6 +27,10 @@ import android.widget.RelativeLayout;
 import android.widget.VideoView;
 
 public class PlayFragmant extends Fragment {
+	
+	
+
+	
 
 	private static final String WIDTH = "width";
 	private static final String HEIGHT = "height";
@@ -73,7 +83,15 @@ public class PlayFragmant extends Fragment {
 
 				adManager.adTypeValue = -1;
 				adManager.parseLogin(true);
-
+				
+				adManager.getParseData(new ParseListener() {
+					
+					public void getAmountListener(float amount) {
+						view.game.estimateAmount=amount;
+						
+					}
+				});
+				
 			}
 
 			@Override
@@ -84,6 +102,13 @@ public class PlayFragmant extends Fragment {
 				// Toast.LENGTH_SHORT).show();
 				adManager.adTypeValue = -1;
 				adManager.parseLogin(true);
+				adManager.getParseData(new ParseListener() {	
+					
+					public void getAmountListener(float amount) {
+						view.game.estimateAmount=amount;
+						
+					}
+				});
 
 			}
 
@@ -95,6 +120,9 @@ public class PlayFragmant extends Fragment {
 
 			}
 		});
+		
+		
+
 
 		menuManager = new MenuManager(activity);
 
@@ -115,12 +143,24 @@ public class PlayFragmant extends Fragment {
 
 		adManager = new AdManager(activity, linContainer, rl);
 
+		AdManager.getParseData(new ParseListener() {
+			
+			public void getAmountListener(float amount) {
+				view.game.estimateAmount=amount;
+				view.game.refresh();
+			}
+		});
+	
 		
 		return rl;
 
 	
 
 	}
+	
+	
+
+	
 
 	public boolean onCreateOptionsMenu(Menu menu) {
 
@@ -233,6 +273,9 @@ public class PlayFragmant extends Fragment {
 		view.game.canUndo = settings.getBoolean(CAN_UNDO, view.game.canUndo);
 		view.game.gameState = settings.getInt(GAME_STATE, view.game.gameState);
 		view.game.lastGameState = settings.getInt(UNDO_GAME_STATE, view.game.lastGameState);
+		
+
+		
 	}
 
 }

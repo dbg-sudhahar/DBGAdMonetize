@@ -58,6 +58,7 @@ public class MainView extends View {
     private int iconPaddingSize;
     //Assets
     private Drawable backgroundRectangle;
+    private Drawable backgroundRectangleWhite;
     private Drawable lightUpRectangle;
     private Drawable fadeRectangle;
     private Bitmap background = null;
@@ -83,6 +84,7 @@ public class MainView extends View {
         try {
             //Getting assets
             backgroundRectangle = resources.getDrawable(R.drawable.background_rectangle);
+            backgroundRectangleWhite = resources.getDrawable(R.drawable.cell_rectangle);
             lightUpRectangle = resources.getDrawable(R.drawable.light_up_rectangle);
             fadeRectangle = resources.getDrawable(R.drawable.fade_rectangle);
             this.setBackgroundColor(resources.getColor(R.color.background));
@@ -109,7 +111,7 @@ public class MainView extends View {
         canvas.drawBitmap(background, 0, 0, paint);
 
         drawScoreText(canvas);
-
+        drawEstimateText(canvas);
         if (!game.isActive() && !game.aGrid.isAnimationActive()) {
             drawNewGameButton(canvas, true);
         }
@@ -247,13 +249,56 @@ public class MainView extends View {
         );
     }
 
-    private void drawHeader(Canvas canvas) {
-        paint.setTextSize(headerTextSize);
-        paint.setColor(getResources().getColor(R.color.text_black));
-        paint.setTextAlign(Paint.Align.LEFT);
-        int textShiftY = centerText() * 2;
-        int headerStartY = sYAll - textShiftY;
-        canvas.drawText(getResources().getString(R.string.header), startingX, headerStartY, paint);
+    private void drawHeaderLogo(Canvas canvas) {
+    	
+    	
+    	
+//     
+        drawDrawable(canvas,
+                getResources().getDrawable(R.drawable.logo),
+                startingX*2,
+                startingX*2,
+                (startingX*2)+207,
+                (startingX*2)+140
+        );
+        
+    }
+    
+    
+    private void drawEstimateText(Canvas canvas) {
+    	
+    	
+    	
+    	
+//    	 drawDrawable(canvas,
+//    			 backgroundRectangle,
+//    			 startingX,
+//    			 startingX*2, 
+//                 100 ,
+//                100
+//         );
+    	
+    	
+    	
+    	
+    	if(game.estimateAmount>0){
+    	String text="The Estimated Amount You Have Donated So Far: $"+game.estimateAmount;
+    	
+    	 int bodyWidthHighScore = (int) (paint.measureText(text));
+
+     
+
+      
+
+         backgroundRectangle.setBounds(startingX, sYAll, bodyWidthHighScore, eYAll);
+    
+         paint.setTextSize(bodyTextSize/2);
+         paint.setColor(getResources().getColor(R.color.text_black));
+         paint.setTextAlign(Paint.Align.LEFT);
+         canvas.drawText(text, startingX, cellSize+(cellSize/2), paint);
+    	
+    	}
+    	 
     }
 
     private void drawInstructions(Canvas canvas) {
@@ -428,7 +473,8 @@ public class MainView extends View {
     private void createBackgroundBitmap(int width, int height) {
         background = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(background);
-        drawHeader(canvas);
+        drawHeaderLogo(canvas);
+        drawEstimateText(canvas);
         drawNewGameButton(canvas, false);
         drawUndoButton(canvas);
         drawBackground(canvas);

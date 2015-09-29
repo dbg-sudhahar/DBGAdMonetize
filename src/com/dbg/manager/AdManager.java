@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.dbg.constants.IAppConstants;
 import com.dbg.constants.ICommonConstants;
-import com.dbg.gameplay.MainActivity;
 import com.dbg.samplegame.R;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
@@ -18,6 +17,8 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
+import com.revmob.RevMob;
+import com.revmob.RevMobAdsListener;
 import com.revmob.ads.banner.RevMobBanner;
 import com.revmob.ads.interstitial.RevMobFullscreen;
 
@@ -32,9 +33,6 @@ import android.widget.LinearLayout;
 import android.widget.MediaController;
 import android.widget.RelativeLayout;
 import android.widget.VideoView;
-
-import com.revmob.RevMob;
-import com.revmob.RevMobAdsListener;
 public class AdManager {
 
 	public static String PARSE_APP_ID="Li0RlkopvS2f58KUqUcyfFtqro0sRpS0GpOF3CP7";
@@ -73,6 +71,7 @@ public class AdManager {
 	
 	Activity activity;
 	
+	
 
 public	 int adTypeValue = -1;
 RelativeLayout.LayoutParams lp1;
@@ -86,9 +85,23 @@ RelativeLayout.LayoutParams lp1;
 		private InterstitialAd interstitialAd;
 		RelativeLayout rl;
 	
+		
+		
+		
+		
+		public static  float total=0;
+		public static float videoAdVal=0.50f;
+
+		public static float adDisplayVal=0.10f;
+
+		public static float adClickVal=0.25f;
+		
+		
+		
+	
 	public AdManager(Activity activity,LinearLayout linContainer,RelativeLayout rl) {
 		this.activity=activity;
-		this.linContainer=linContainer;
+		this.linContainer=linContainer; 
 		
 		 revmob = RevMob.start(activity);
 		 
@@ -137,11 +150,52 @@ RelativeLayout.LayoutParams lp1;
 		}catch(Exception e){
 			
 		}
+		
 
 			
 
 		}
+
+public interface ParseListener {
+
 	
+	void getAmountListener(float amount);
+	
+}
+
+
+public  static void  getParseData(final ParseListener parseListener){
+		
+		total=0;
+		
+		ParseQuery<ParseObject> query = ParseQuery.getQuery("Advertisment");
+		query.findInBackground(new FindCallback<ParseObject>() {
+			
+			@Override
+			public void done(List<ParseObject> arg0, ParseException arg1) {
+			
+				if(arg0!=null && arg0.size()>0){
+				for (int i = 0; i < arg0.size(); i++) {
+					total=total+(arg0.get(i).getInt(ICommonConstants.ParseDisplayCount) *adDisplayVal);
+					System.out.println("VAL 1=="+total);
+					total=total+(arg0.get(i).getInt(ICommonConstants.ParseClickCount) *adClickVal);
+					System.out.println("VAL 2=="+total);
+					total=total+(arg0.get(i).getInt(ICommonConstants.ParseVideoDisplayCount) *videoAdVal);
+					System.out.println("VAL 3=="+total);
+				}
+				
+				parseListener.getAmountListener(total);
+				
+			
+				}
+				
+			
+				
+				
+			}
+		});
+		
+	}
 	public  void updateParseCount(int type,final String col) {
 		ParseQuery<ParseObject> advertisments = ParseQuery.getQuery(ICommonConstants.ParseAdvertismentTable);
 		advertisments.whereEqualTo(ICommonConstants.ParseAdType, type);

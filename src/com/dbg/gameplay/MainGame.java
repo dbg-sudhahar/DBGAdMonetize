@@ -44,11 +44,17 @@ public class MainGame {
     public long highScore = 0;
     public long lastScore = 0;
     private long bufferScore = 0;
+    
+    public float estimateAmount=0;
 
     public MainGame(Context context, MainView view) {
         mContext = context;
         mView = view;
         endingMaxValue = (int) Math.pow(2, view.numCellTypes - 1);
+    }
+    
+    public void  refresh(){
+         mView.invalidate();
     }
 
     public void newGame() {

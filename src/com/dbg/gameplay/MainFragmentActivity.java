@@ -2,27 +2,27 @@ package com.dbg.gameplay;
 
 import com.dbg.adapter.TabsPagerAdapter;
 import com.dbg.manager.NonSwipeableViewPager;
+import com.dbg.manager.PagerSlidingTabStrip;
 import com.dbg.samplegame.R;
 
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.app.FragmentTransaction;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.TextView;
+import android.util.TypedValue;
 
-public class MainFragmentActivity extends FragmentActivity implements ActionBar.TabListener {
+public class MainFragmentActivity extends FragmentActivity  {
 	private NonSwipeableViewPager viewPager;
     private TabsPagerAdapter mAdapter;
     private ActionBar actionBar;
+    
+	private int currentColor = 0xFFd3571a;
+	 private PagerSlidingTabStrip tabs;
     // Tab titles
-    private String[] tabs = { "Play", "DashBoard", "About" };
- 
+    private String[] tabsName = { "Play", "DashBoard", "Donate Now","About" };
+   
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,53 +30,22 @@ public class MainFragmentActivity extends FragmentActivity implements ActionBar.
  
         // Initilization
         viewPager = (NonSwipeableViewPager) findViewById(R.id.pager);
-        actionBar = getActionBar();
+      
+        tabs=(PagerSlidingTabStrip)findViewById(R.id.tabs);
+       
         mAdapter = new TabsPagerAdapter(getSupportFragmentManager());
  
         viewPager.setAdapter(mAdapter);
-        actionBar.setHomeButtonEnabled(false);
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);        
- 
-        // Adding Tabs
-        for (String tab_name : tabs) {
-            actionBar.addTab(actionBar.newTab().setText(tab_name)
-                    .setTabListener(this));
-        }
- 
-        /**
-         * on swiping the viewpager make respective tab selected
-         * */
-        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
- 
-            @Override
-            public void onPageSelected(int position) {
-                // on changing the page
-                // make respected tab selected
-                actionBar.setSelectedNavigationItem(position);
-            }
- 
-            @Override
-            public void onPageScrolled(int arg0, float arg1, int arg2) {
-            }
- 
-            @Override
-            public void onPageScrollStateChanged(int arg0) {
-            }
-        });
+        final int pageMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, getResources().getDisplayMetrics());
+        viewPager.setPageMargin(pageMargin);
+        
+    	tabs.setViewPager(viewPager);
+
+		tabs.setIndicatorColor(currentColor);
+        
+
+
+       
     }
  
-    @Override
-    public void onTabReselected(Tab tab, FragmentTransaction ft) {
-    }
- 
-    @Override
-    public void onTabSelected(Tab tab, FragmentTransaction ft) {
-        // on tab selected
-        // show respected fragment view
-        viewPager.setCurrentItem(tab.getPosition());
-    }
- 
-    @Override
-    public void onTabUnselected(Tab tab, FragmentTransaction ft) {
-    }
 }
