@@ -44,14 +44,14 @@ public class MainView extends View {
     //Timing
     private long lastFPSTime = System.nanoTime();
     //Text
-    private float titleTextSize;
-    private float bodyTextSize;
+    public float titleTextSize;
+    public float bodyTextSize;
     private float headerTextSize;
     private float instructionsTextSize;
     private float gameOverTextSize;
     //Layout variables
     private int cellSize = 0;
-    private float textSize = 0;
+    public float textSize = 0;
     private float cellTextSize = 0;
     private int gridWidth = 0;
     private int textPaddingSize;
@@ -109,7 +109,7 @@ public class MainView extends View {
         //Reset the transparency of the screen
 
         canvas.drawBitmap(background, 0, 0, paint);
-
+       
         drawScoreText(canvas);
         drawEstimateText(canvas);
         if (!game.isActive() && !game.aGrid.isAnimationActive()) {
@@ -160,6 +160,8 @@ public class MainView extends View {
         }
         canvas.drawText("" + value, cellSize / 2, cellSize / 2 - textShiftY, paint);
     }
+    
+ 
 
     private void drawScoreText(Canvas canvas) {
         //Drawing the score text: Ver 2
@@ -256,10 +258,10 @@ public class MainView extends View {
 //     
         drawDrawable(canvas,
                 getResources().getDrawable(R.drawable.logo),
-                startingX*2,
-                startingX*2,
-                (startingX*2)+207,
-                (startingX*2)+140
+                startingX,
+                startingX,
+                (startingX)+(207*2),
+                (startingX)+(140*2)
         );
         
     }
@@ -292,10 +294,12 @@ public class MainView extends View {
 
          backgroundRectangle.setBounds(startingX, sYAll, bodyWidthHighScore, eYAll);
     
-         paint.setTextSize(bodyTextSize/2);
+         paint.setTextSize(bodyTextSize);
          paint.setColor(getResources().getColor(R.color.text_black));
          paint.setTextAlign(Paint.Align.LEFT);
-         canvas.drawText(text, startingX, cellSize+(cellSize/8), paint);
+         canvas.drawText(text, startingX, cellSize+(cellSize/2), paint);
+//         int textShiftY = centerText() ;
+//         canvas.drawText(text,startingX, endingY - textShiftY + textPaddingSize, paint);
     	
     	}
     	 
@@ -305,8 +309,7 @@ public class MainView extends View {
         paint.setTextSize(instructionsTextSize);
         paint.setTextAlign(Paint.Align.LEFT);
         int textShiftY = centerText() * 2;
-        canvas.drawText(getResources().getString(R.string.instructions),
-                startingX, endingY - textShiftY + textPaddingSize, paint);
+        canvas.drawText(getResources().getString(R.string.instructions),startingX, endingY - textShiftY + textPaddingSize, paint);
     }
 
     private void drawBackground(Canvas canvas) {
@@ -474,12 +477,12 @@ public class MainView extends View {
         background = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(background);
         drawHeaderLogo(canvas);
-        drawEstimateText(canvas);
+//        drawEstimateText(canvas);
         drawNewGameButton(canvas, false);
         drawUndoButton(canvas);
         drawBackground(canvas);
         drawBackgroundGrid(canvas);
-        drawInstructions(canvas);
+//        drawInstructions(canvas);
 
     }
 
@@ -571,8 +574,7 @@ public class MainView extends View {
 
         paint.setTextAlign(Paint.Align.CENTER);
         paint.setTextSize(1000);
-        instructionsTextSize = Math.min(
-            1000f * (widthWithPadding / (paint.measureText(getResources().getString(R.string.instructions)))),
+        instructionsTextSize = Math.min(1000f * (widthWithPadding / (paint.measureText(getResources().getString(R.string.instructions)))),
             textSize / 1.5f
         );
         gameOverTextSize = Math.min(

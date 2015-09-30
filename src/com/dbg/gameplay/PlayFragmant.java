@@ -13,9 +13,13 @@ import com.parse.ParseQuery;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils.TruncateAt;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -23,7 +27,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.VideoView;
 
 public class PlayFragmant extends Fragment {
@@ -82,12 +88,14 @@ public class PlayFragmant extends Fragment {
 				// Toast.LENGTH_SHORT).show();
 
 				adManager.adTypeValue = -1;
-				adManager.parseLogin(true);
+				adManager.parseLogin(false);
 				
 				adManager.getParseData(new ParseListener() {
 					
 					public void getAmountListener(float amount) {
-						view.game.estimateAmount=amount;
+//						view.game.estimateAmount=amount;
+						
+						setData(amount);
 						
 					}
 				});
@@ -105,7 +113,9 @@ public class PlayFragmant extends Fragment {
 				adManager.getParseData(new ParseListener() {	
 					
 					public void getAmountListener(float amount) {
-						view.game.estimateAmount=amount;
+//						view.game.estimateAmount=amount;
+						
+						setData(amount);
 						
 					}
 				});
@@ -136,6 +146,12 @@ public class PlayFragmant extends Fragment {
 
 		RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
 				RelativeLayout.LayoutParams.WRAP_CONTENT);
+		
+		
+		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.FILL_PARENT);
+		params.weight = 1.0f;
+		params.gravity = Gravity.TOP;
+		
 		lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
 		linContainer = new LinearLayout(activity);
 
@@ -146,8 +162,9 @@ public class PlayFragmant extends Fragment {
 		AdManager.getParseData(new ParseListener() {
 			
 			public void getAmountListener(float amount) {
-				view.game.estimateAmount=amount;
-				view.game.refresh();
+				//view.game.estimateAmount=amount;
+				//view.game.refresh();
+				setData(amount);
 			}
 		});
 	
@@ -156,6 +173,33 @@ public class PlayFragmant extends Fragment {
 
 	
 
+	}
+	
+	public void setData(float amount){
+		
+		String text="The Estimated Amount You Have Donated So Far: $"+amount;
+		
+		LinearLayout.LayoutParams lastTxtParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+		lastTxtParams.setMargins(35, 0, 35, 35);
+		lastTxtParams.gravity = Gravity.TOP;
+		
+		TextView textViewAmount=new TextView(activity);
+		textViewAmount.setTextColor(Color.BLACK);
+
+		textViewAmount.setTextAppearance(activity, android.R.attr.textAppearanceLarge);
+		textViewAmount.setTypeface(null, Typeface.BOLD);
+		textViewAmount.setTextSize(view.titleTextSize/2);
+		textViewAmount.setSingleLine();
+		textViewAmount.setEllipsize(TruncateAt.MARQUEE);
+		textViewAmount.setMarqueeRepeatLimit(-1);
+		textViewAmount.setHorizontallyScrolling(true);
+		textViewAmount.setFocusableInTouchMode(true);
+		textViewAmount.setText(text);
+		textViewAmount.setLayoutParams(lastTxtParams);
+		textViewAmount.setSelected(true);
+		linContainer.removeAllViews();
+		linContainer.addView(textViewAmount);
+		
 	}
 	
 	
