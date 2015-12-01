@@ -260,8 +260,8 @@ public class MainView extends View {
                 getResources().getDrawable(R.drawable.logo),
                 startingX,
                 startingX,
-                (startingX)+(207*2),
-                (startingX)+(140*2)
+                cellSize+(cellSize/2),
+                cellSize+(cellSize/2)
         );
         
     }

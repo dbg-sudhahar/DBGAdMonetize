@@ -25,7 +25,7 @@ public class AboutFragment extends Fragment {
 	
 	Activity activity;
 
-	String URL="http://fongchang.wix.com/discoverapptribute";
+	String URL="http://mailer.dbgstage.com/apptribute/index.html";
 	RelativeLayout relContainer;
 	TextView textViewVersion;
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

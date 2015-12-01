@@ -1,5 +1,7 @@
 package com.dbg.gameplay;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.List;
 
 import com.dbg.constants.ICommonConstants;
@@ -177,7 +179,11 @@ public class PlayFragmant extends Fragment {
 	
 	public void setData(float amount){
 		
-		String text="The Estimated Amount You Have Donated So Far: $"+amount;
+		NumberFormat formatter = new DecimalFormat("###,###,###.##");
+//	       System.out.println("The Decimal Value is:"+formatter.format(amount)
+		
+		
+		String text="The Estimated Amount You Have Donated So Far: $"+formatter.format(amount);
 		
 		LinearLayout.LayoutParams lastTxtParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 		lastTxtParams.setMargins(35, 0, 35, 35);
