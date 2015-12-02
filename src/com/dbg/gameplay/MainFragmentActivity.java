@@ -21,7 +21,7 @@ public class MainFragmentActivity extends FragmentActivity  {
 	private int currentColor = 0xFFd3571a;
 	 private PagerSlidingTabStrip tabs;
     // Tab titles
-    private String[] tabsName = { "Play", "DashBoard", "Donate Now","About" };
+   // private String[] tabsName = { "Play", "DashBoard", "Donate Now","About" };
    
     @Override
     protected void onCreate(Bundle savedInstanceState) {

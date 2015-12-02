@@ -4,6 +4,7 @@ import com.dbg.gameplay.AboutFragment;
 import com.dbg.gameplay.DonateNowFragment;
 import com.dbg.gameplay.PlayFragmant;
 import com.dbg.gameplay.ProfileFragment;
+import com.dbg.gameplay.SettingFragment;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -11,7 +12,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 public class TabsPagerAdapter extends FragmentPagerAdapter {
 	
-	 private String[] tabsName = { "Play", "DashBoard", "Donate Now","About" };
+	 private String[] tabsName = { "Play", "DashBoard", "Donate Now","Setting","About" };
 	 
     public TabsPagerAdapter(FragmentManager fm) {
         super(fm);
@@ -29,7 +30,9 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
         case 2:
         	 return new DonateNowFragment();
         case 3:
-       	 return new AboutFragment();
+       	 return new SettingFragment();
+        case 4:
+          	 return new AboutFragment();
         }
  
         return null;

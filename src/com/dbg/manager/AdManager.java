@@ -22,6 +22,7 @@ import com.revmob.RevMobAdsListener;
 import com.revmob.ads.banner.RevMobBanner;
 import com.revmob.ads.interstitial.RevMobFullscreen;
 
+import android.R.bool;
 import android.app.Activity;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
@@ -98,7 +99,13 @@ RelativeLayout.LayoutParams lp1;
 		
 		
 		
-	
+	public AdManager(Activity activity) {
+		revmob = RevMob.start(activity);
+		 
+		 videoHolder= new VideoView(activity);
+		 this.activity=activity;
+	}
+		
 	public AdManager(Activity activity,LinearLayout linContainer,RelativeLayout rl) {
 		this.activity=activity;
 		this.linContainer=linContainer; 
@@ -117,9 +124,17 @@ RelativeLayout.LayoutParams lp1;
 	        lp1.addRule(RelativeLayout.CENTER_VERTICAL);
 	}
 	
+	private boolean IsAdShow=false;
+	public  void ShowAd(final boolean isVideoLoad) {
+		IsAdShow=true;
+		
+		loadVideoAd(0);
+		
+		
+	}
 	public  void parseLogin(final boolean isVideoLoad) {
 
-		
+		if(AppPreferenceManager.getAdSettingType(activity)==0){
 
 		try{
 		
@@ -152,9 +167,14 @@ RelativeLayout.LayoutParams lp1;
 		}
 		
 
-			
+		}
+		else{
+			AppPreferenceManager.increaseAdCount(activity);
+		}
 
 		}
+	
+	
 
 public interface ParseListener {
 
@@ -280,7 +300,10 @@ public void loadAdMob() {
 			public void onAdLoaded() {
 				// TODO Auto-generated method stub
 				super.onAdLoaded();
-
+				if(IsAdShow){
+					IsAdShow=false;
+					AppPreferenceManager.decreaseAdCount(activity);
+				}
 				
 		updateParseCount(ICommonConstants.AdMob, ICommonConstants.ParseDisplayCount);
 			}
@@ -336,6 +359,10 @@ RevMobAdsListener revmobListener = new RevMobAdsListener(){
 	public void onRevMobAdDisplayed() {
 		// TODO Auto-generated method stub
 		super.onRevMobAdDisplayed();
+		if(IsAdShow){
+			IsAdShow=false;
+			AppPreferenceManager.decreaseAdCount(activity);
+		}
 		updateParseCount(ICommonConstants.RevMob, ICommonConstants.ParseDisplayCount);
 		
 	}
@@ -361,7 +388,10 @@ RevMobAdsListener revmobListener = new RevMobAdsListener(){
 	public void onRevMobVideoLoaded(){
 		
 		video.showVideo();
-		
+		if(IsAdShow){
+			IsAdShow=false;
+			AppPreferenceManager.decreaseAdCount(activity);
+		}
 		updateParseCount(ICommonConstants.RevMob, ICommonConstants.ParseVideoDisplayCount);
 	}		
 	
@@ -386,7 +416,10 @@ private void loadCustomAd() {
 
 	linContainer.addView(customAd);
 	
-
+if(IsAdShow){
+	IsAdShow=false;
+	AppPreferenceManager.decreaseAdCount(activity);
+}
 	updateParseCount(ICommonConstants.DBGAd, ICommonConstants.ParseDisplayCount);
 	
 	}
@@ -406,7 +439,10 @@ private void loadVideoAd(int adType){
 		
 		break;
 	case 2:
-		
+		if(IsAdShow){
+			IsAdShow=false;
+			AppPreferenceManager.decreaseAdCount(activity);
+		}
 		updateParseCount(ICommonConstants.DBGAd, ICommonConstants.ParseVideoDisplayCount);
 		if(videoHolder!=null){
 		 rl.addView(videoHolder,lp1);
@@ -453,6 +489,10 @@ public void loadAdMobVideo() {
 			
 			if(interstitialAd.isLoaded()){
 				interstitialAd.show();
+			}
+			if(IsAdShow){
+				IsAdShow=false;
+				AppPreferenceManager.decreaseAdCount(activity);
 			}
 			updateParseCount(ICommonConstants.AdMob, ICommonConstants.ParseVideoDisplayCount);
 		}
